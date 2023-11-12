@@ -1,0 +1,81 @@
+-- Creacion de tabla Sucursales
+CREATE TABLE sucursales (
+id_sucursal int primary key auto_increment,
+direccion varchar (100) NOT NULL,
+ciudad varchar (30) NOT NULL,
+telefono varchar (30) NOT NULL,
+horario_apertura time NOT NULL,
+horario_cierre time NOT NULL);
+
+-- Creacion de tabla Empleados
+CREATE TABLE empleados (
+id_empleado int primary key auto_increment,
+id_sucursal int,
+FOREIGN KEY (id_sucursal) REFERENCES sucursales(id_sucursal),
+nombre varchar (30) NOT NULL,
+apellido varchar (30) NOT NULL,
+fecha_nacimiento date NOT NULL,
+fecha_ingreso date NOT NULL,
+direccion varchar (100) NOT NULL,
+telefono varchar (30));
+
+-- Creacion de tabla Canales
+CREATE TABLE canales (
+id_canal int primary key auto_increment,
+nombre varchar (30) NOT NULL,
+fecha_alta datetime NOT NULL,
+digital boolean NOT NULL);
+
+-- Creacion de tabla Promociones
+CREATE TABLE promociones (
+id_promocion int primary key auto_increment,
+nombre varchar (30) NOT NULL,
+tasa decimal NOT NULL,
+segmento varchar (30));
+
+-- Creacion de tabla Clientes
+CREATE TABLE clientes (
+id_cliente int primary key auto_increment,
+nombre varchar (30) NOT NULL,
+apellido varchar (30) NOT NULL,
+fecha_nacimiento date NOT NULL,
+calificacion_crediticia int,
+direccion varchar (100) NOT NULL,
+telefono varchar (30) NOT NULL);
+
+-- Creacion de tabla Creditos
+CREATE TABLE creditos (
+id_credito int primary key auto_increment,
+id_cliente int NOT NULL,
+FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente),
+id_promocion int NOT NULL,
+FOREIGN KEY (id_promocion) REFERENCES promociones(id_promocion),
+id_empleado int NOT NULL,
+FOREIGN KEY (id_empleado) REFERENCES empleados(id_empleado),
+monto decimal NOT NULL,
+cuotas int NOT NULL,
+fecha datetime NOT NULL,
+al_dia boolean);
+
+-- Creacion de tabla Pagos
+CREATE TABLE pagos (
+id_pago int primary key auto_increment,
+id_credito int NOT NULL,
+FOREIGN KEY (id_credito) REFERENCES creditos(id_credito),
+monto decimal NOT NULL,
+cuota int NOT NULL,
+fecha datetime NOT NULL,
+medio_pago varchar (30) NOT NULL);
+
+-- Creacion de tabla Solicitudes
+CREATE TABLE solicitudes (
+id_solicitud int primary key auto_increment,
+id_credito int NOT NULL,
+FOREIGN KEY (id_credito) REFERENCES creditos(id_credito),
+id_cliente int NOT NULL,
+FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente),
+id_canal int NOT NULL,
+FOREIGN KEY (id_canal) REFERENCES canales(id_canal),
+monto decimal NOT NULL,
+fecha datetime NOT NULL,
+aprobada boolean NOT NULL);
