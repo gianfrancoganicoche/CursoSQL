@@ -30,7 +30,7 @@ digital boolean NOT NULL);
 CREATE TABLE promociones (
 id_promocion int primary key auto_increment,
 nombre varchar (30) NOT NULL,
-tasa decimal NOT NULL,
+tasa decimal (10,2) NOT NULL,
 segmento varchar (30));
 
 -- Creacion de tabla Clientes
@@ -43,6 +43,17 @@ calificacion_crediticia int,
 direccion varchar (100) NOT NULL,
 telefono varchar (30) NOT NULL);
 
+-- Creacion de tabla Solicitudes
+CREATE TABLE solicitudes (
+id_solicitud int primary key auto_increment,
+id_cliente int NOT NULL,
+FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente),
+id_canal int NOT NULL,
+FOREIGN KEY (id_canal) REFERENCES canales(id_canal),
+monto decimal NOT NULL,
+fecha datetime NOT NULL,
+aprobada boolean NOT NULL);
+
 -- Creacion de tabla Creditos
 CREATE TABLE creditos (
 id_credito int primary key auto_increment,
@@ -52,6 +63,8 @@ id_promocion int NOT NULL,
 FOREIGN KEY (id_promocion) REFERENCES promociones(id_promocion),
 id_empleado int NOT NULL,
 FOREIGN KEY (id_empleado) REFERENCES empleados(id_empleado),
+id_solicitud int NOT NULL,
+FOREIGN KEY (id_solicitud) REFERENCES solicitudes(id_solicitud),
 monto decimal NOT NULL,
 cuotas int NOT NULL,
 fecha datetime NOT NULL,
@@ -62,20 +75,7 @@ CREATE TABLE pagos (
 id_pago int primary key auto_increment,
 id_credito int NOT NULL,
 FOREIGN KEY (id_credito) REFERENCES creditos(id_credito),
-monto decimal NOT NULL,
+monto decimal (10,2) NOT NULL,
 cuota int NOT NULL,
 fecha datetime NOT NULL,
 medio_pago varchar (30) NOT NULL);
-
--- Creacion de tabla Solicitudes
-CREATE TABLE solicitudes (
-id_solicitud int primary key auto_increment,
-id_credito int NOT NULL,
-FOREIGN KEY (id_credito) REFERENCES creditos(id_credito),
-id_cliente int NOT NULL,
-FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente),
-id_canal int NOT NULL,
-FOREIGN KEY (id_canal) REFERENCES canales(id_canal),
-monto decimal NOT NULL,
-fecha datetime NOT NULL,
-aprobada boolean NOT NULL);
