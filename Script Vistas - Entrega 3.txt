@@ -1,0 +1,42 @@
+-- Vista Solicitudes rechazadas
+CREATE VIEW solicitudes_rechazadas AS
+SELECT cl.nombre as nombre_cliente , apellido, fecha_nacimiento, calificacion_crediticia, telefono, monto, ca.nombre as nombre_canal, fecha 
+FROM clientes cl
+INNER JOIN solicitudes s on cl.id_cliente = s.id_cliente
+INNER JOIN canales ca on s.id_canal = ca.id_canal
+WHERE aprobada = 0
+ORDER BY fecha ASC;
+
+-- Vista Solicitudes aprobadas
+CREATE VIEW solicitudes_aprobadas AS
+SELECT cl.nombre as nombre_cliente , apellido, fecha_nacimiento, calificacion_crediticia, telefono, monto, ca.nombre as nombre_canal, fecha 
+FROM clientes cl
+INNER JOIN solicitudes s on cl.id_cliente = s.id_cliente
+INNER JOIN canales ca on s.id_canal = ca.id_canal
+WHERE aprobada = 1
+ORDER BY fecha ASC;
+
+-- Vista Creditos de más de $20.000
+CREATE VIEW creditos_mas_20000 AS 
+SELECT cl.nombre AS nombre_cliente, apellido, monto, cuotas, tasa, fecha, segmento, calificacion_crediticia 
+FROM creditos c
+INNER JOIN clientes cl ON cl.id_cliente = c.id_cliente
+INNER JOIN promociones p ON c.id_promocion = p.id_promocion
+WHERE monto > 20000
+ORDER BY monto DESC;
+
+-- Vista Información sobre Sucursales
+CREATE VIEW info_sucursales AS
+SELECT ciudad, s.direccion AS direccion, s.telefono AS telefono, horario_apertura, horario_cierre, COUNT(*) AS cantidad_empleados
+FROM sucursales s
+INNER JOIN empleados em ON s.id_sucursal = em.id_sucursal
+GROUP BY direccion, ciudad, telefono, horario_cierre, horario_apertura
+ORDER BY ciudad ASC;
+
+-- Vista Ventas por cada promoción
+CREATE VIEW detalle_promos AS
+SELECT p.id_promocion AS id_promo, p.nombre, sum(monto) AS monto_vendido, ROUND (AVG(c.cuotas)) AS cuotas_promedio
+FROM creditos c
+INNER JOIN promociones p ON c.id_promocion = p.id_promocion
+GROUP BY id_promo
+ORDER BY monto_vendido DESC;
