@@ -1,0 +1,59 @@
+--Creación función para cálculo de tasa de interés
+DELIMITER %
+
+CREATE FUNCTION calculo_tasa(cuotas INT, monto INT) RETURNS DECIMAL
+DETERMINISTIC
+BEGIN
+	IF cuotas < 12 AND monto < 30000
+		THEN
+        	RETURN 140.40;
+    	END IF;
+    
+	IF cuotas < 12 AND monto >= 30000
+		THEN
+        	RETURN 135.10;
+    	END IF;
+    
+	IF cuotas >= 12 AND monto < 100000
+		THEN
+        	RETURN 120.50;
+		END IF;
+        
+	IF cuotas >= 12 AND monto >= 100000
+		THEN
+        	RETURN 80.30;
+	END IF;    
+
+	RETURN 0; 
+    
+END%
+
+
+
+--Cálculo de edad de un cliente específico
+
+DELIMITER %
+
+CREATE FUNCTION edad_cliente (p_id_cliente INT) RETURNS INT 
+READS SQL DATA
+BEGIN
+    DECLARE fecha_nac DATE;
+    DECLARE edad INT;
+
+    SELECT fecha_nacimiento 
+	INTO fecha_nac
+    FROM clientes
+    WHERE id_cliente = p_id_cliente
+    LIMIT 1;
+
+    IF fecha_nac IS NOT NULL THEN
+        SET edad = YEAR(CURDATE()) - YEAR(fecha_nac) - 
+                   (DATE_FORMAT(CURDATE(), '%m%d') < DATE_FORMAT(fecha_nac, '%m%d'));
+    ELSE
+        SET edad = -1;
+    END IF;
+
+    RETURN edad;
+END %
+
+DELIMITER ;
