@@ -1,0 +1,26 @@
+--Store procedure para agregar un Canal de Venta
+DELIMITER //
+CREATE PROCEDURE sp_agregar_canal (IN id_canal INT, IN nombre CHAR(30), IN digital BOOLEAN)
+BEGIN
+    DECLARE fecha_actual DATETIME;
+    SET fecha_actual = NOW();
+    
+    INSERT INTO canales (id_canal, nombre, fecha_alta, digital) 
+    VALUES (id_canal, nombre, fecha_actual, digital);
+    SELECT * FROM canales ORDER BY id_canal desc;
+END //
+DELIMITER ;
+
+
+--Store procedore para ordenar una tabla
+DELIMITER //
+
+CREATE PROCEDURE sp_ordenar_creditos(IN campo_orden VARCHAR(50), IN tipo_orden VARCHAR(4))
+BEGIN
+    SET @clausula = CONCAT('SELECT * FROM creditos ORDER BY ', campo_orden, ' ', tipo_orden);
+    PREPARE runSQL FROM @clausula;
+    EXECUTE runSQL;
+    DEALLOCATE PREPARE runSQL;
+END //
+
+DELIMITER ;
