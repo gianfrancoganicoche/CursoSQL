@@ -1,0 +1,47 @@
+--Trigger para no eliminar sucursal
+
+DELIMITER //
+
+CREATE TRIGGER noEliminarSucursal
+BEFORE DELETE ON sucursales
+FOR EACH ROW
+BEGIN
+    DECLARE num_empleados INT;
+    
+    SELECT COUNT(*) INTO num_empleados
+    FROM empleados
+    WHERE id_sucursal = OLD.id_sucursal;
+    
+    IF num_empleados > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se puede eliminar la sucursal porque tiene empleados asociados.';
+    END IF;
+END //
+
+DELIMITER ;
+
+
+
+
+--Trigger para cambiar estado a "Al dia" en creditos
+
+DELIMITER //
+
+CREATE TRIGGER cambiarEstadoCredito
+AFTER INSERT ON pagos
+FOR EACH ROW
+BEGIN
+    DECLARE total_pagado DECIMAL(10,2);
+    
+    SELECT SUM(monto) INTO total_pagado
+    FROM pagos
+    WHERE id_credito = NEW.id_credito;
+    
+    IF total_pagado >= (SELECT monto FROM creditos WHERE id_credito = NEW.id_credito) THEN
+        UPDATE creditos
+        SET al_dia = TRUE
+        WHERE id_credito = NEW.id_credito;
+    END IF;
+END //
+
+DELIMITER ;
