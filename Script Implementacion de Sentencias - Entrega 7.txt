@@ -1,0 +1,9 @@
+-- Creacion de los usuarios con su contraseña
+create user 'usuario1'@'localhost' identified by 'cursosql';
+create user 'usuario2'@'localhost' identified by 'cursosql';
+
+-- Acceso de solo lectura al usuario 1 sobre todas las tablas
+grant select on *.* to 'usuario1'@'localhost';
+
+-- Acceso a Lectura (select), Insercion (insert) y Modificacion de datos (update)
+grant select, insert, update on *.* to 'usuario2'@'localhost';
