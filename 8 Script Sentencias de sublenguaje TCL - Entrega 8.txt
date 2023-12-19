@@ -1,0 +1,49 @@
+-- ELIMINACIÓN DE UN REGISTRO MEDIANTE TRANSACCIÓN:
+
+-- Iniciar transacción:
+START TRANSACTION;
+
+-- Eliminar un registro de la tabla Pagos:
+DELETE FROM pagos WHERE id_pago = 1;
+
+-- Línea comentada para rollback:
+-- ROLLBACK;
+
+-- Línea comentada para commit:
+-- COMMIT;
+
+
+
+
+-- INSERCIÓN DE 8 NUEVOS REGISTROS MEDIANTE UNA TRANSACCIÓN:
+
+-- Iniciar transacción:
+START TRANSACTION;
+
+-- Insertar registros 4 al 7 (la tabla ya tenía 3):
+INSERT INTO sucursales (id_sucursal, direccion, ciudad, telefono, horario_apertura, horario_cierre)
+VALUES
+  (4, 'Calle A #123', 'Ciudad X', '91234567', '08:00', '18:00'),
+  (5, 'Avenida B #456', 'Ciudad Y', '92234567', '09:00', '19:00'),
+  (6, 'Calle C #789', 'Ciudad Z', '93234567', '10:00', '20:00'),
+  (7, 'Avenida D #012', 'Ciudad W', '94234567', '11:00', '21:00');
+
+-- Crear savepoint después del registro #7:
+SAVEPOINT savepoint_7;
+
+-- Insertar registros 8 al 11:
+INSERT INTO sucursales (id_sucursal, direccion, ciudad, telefono, horario_apertura, horario_cierre)
+VALUES
+  (8, 'Calle E #345', 'Ciudad P', '95234567', '08:30', '18:30'),
+  (9, 'Avenida F #678', 'Ciudad Q', '96234567', '09:30', '21:30'),
+  (10, 'Calle G #901', 'Ciudad R', '97234567', '10:30', '20:30'),
+  (11, 'Avenida H #234', 'Ciudad S', '98234567', '11:30', '21:30');
+
+-- Crear savepoint después del registro #8:
+SAVEPOINT savepoint_11;
+
+-- Línea comentada para eliminar el savepoint después del registro #7:
+-- ROLLBACK TO savepoint_7;
+
+-- Línea comentada para confirmar y aplicar los cambios:
+-- COMMIT;
